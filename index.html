@@ -24,9 +24,24 @@
             overflow: hidden;
         }
 
-        .bg-hearts { position: fixed; width: 100%; height: 100%; z-index: -1; }
-        .floating-heart { position: absolute; color: rgba(255, 133, 162, 0.4); animation: floatUp 6s infinite linear; }
-        @keyframes floatUp { 0% { transform: translateY(110vh); opacity: 1; } 100% { transform: translateY(-10vh); opacity: 0; } }
+        /* خلفية القلوب المتطايرة */
+        .bg-hearts {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 133, 162, 0.4);
+            animation: floatUp 6s infinite linear;
+        }
+
+        @keyframes floatUp {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+        }
 
         .card {
             background: white;
@@ -38,160 +53,136 @@
             max-width: 380px;
             border: 4px solid #ffcad4;
             animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
         }
 
-        @keyframes popIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
-
-        .img-container img { width: 100%; max-width: 180px; height: auto; margin-bottom: 20px; }
-        .msg-bubble { background: var(--dark-text); color: white; padding: 20px; border-radius: 20px; font-size: 1.3rem; font-weight: bold; margin-bottom: 25px; border: 2px solid var(--primary-pink); }
-        .btn { background: var(--primary-pink); color: white; border: none; padding: 12px 35px; border-radius: 50px; font-size: 1.1rem; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .btn:hover { transform: scale(1.1); }
-
-        /* Login & Dashboard Styles */
-        .login-section { position: fixed; top: 10px; left: 10px; z-index: 100; }
-        .admin-btn { background: #555; opacity: 0.5; padding: 5px 10px; font-size: 12px; }
-        #dashboard {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: white; z-index: 1000; overflow-y: auto; padding: 20px;
-            display: none;
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background: var(--primary-pink); color: white; }
+
+        .img-container {
+            width: 100%;
+            max-width: 200px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-container img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .msg-bubble {
+            background: var(--dark-text);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            border: 2px solid var(--primary-pink);
+            line-height: 1.4;
+        }
+
+        .next-btn {
+            background: var(--primary-pink);
+            color: white;
+            border: none;
+            padding: 15px 45px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            box-shadow: 0 8px 20px rgba(255, 133, 162, 0.4);
+            transition: 0.3s;
+            font-weight: bold;
+        }
+
+        .next-btn:hover { transform: scale(1.1); background: #ff6b8e; }
 
         .hidden { display: none; }
+
+        .heart-trigger {
+            font-size: 100px;
+            cursor: pointer;
+            animation: beat 1s infinite;
+            display: inline-block;
+            color: var(--kitty-red);
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
     </style>
 </head>
-<body onload="captureData()">
+<body>
 
 <div class="bg-hearts" id="hearts-box"></div>
 
-<div class="login-section">
-    <button class="btn admin-btn" onclick="showLogin()">Admin Login</button>
+<div id="s1" class="card">
+    <div class="img-container">
+        <img src="https://i.pinimg.com/originals/8a/0a/f3/8a0af381284d7285573d8e57843d1a84.png" alt="Hello Kitty">
+    </div>
+    <div class="msg-bubble">هلو فاطمة 🐾</div>
+    <button class="next-btn" onclick="show(2)">هلووو</button>
 </div>
 
-<div id="dashboard">
-    <button class="btn" onclick="closeDashboard()" style="background: #333;">إغلاق</button>
-    <h2>لوحة تحكم عبود - سجل الزوار</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>الاسم</th>
-                <th>الموقع (تقريبي)</th>
-                <th>IP</th>
-                <th>التاريخ</th>
-            </tr>
-        </thead>
-        <tbody id="visitor-log"></tbody>
-    </table>
+<div id="s2" class="card hidden">
+    <div class="img-container">
+        <img src="https://i.pinimg.com/originals/03/92/7d/03927d6d34b3e8e8f8d689626b911226.png" alt="Thinking">
+    </div>
+    <div class="msg-bubble">فاطمة عندي سؤال الجججج 🤔</div>
+    <button class="next-btn" onclick="show(3)">شنو هو؟</button>
 </div>
 
-<div id="main-content">
-    <div id="s1" class="card">
-        <div class="img-container"><img src="https://i.pinimg.com/originals/8a/0a/f3/8a0af381284d7285573d8e57843d1a84.png"></div>
-        <div class="msg-bubble">هلو فاطمة 🐾</div>
-        <button class="btn" onclick="show(2)">هلووو</button>
+<div id="s3" class="card hidden">
+    <div class="img-container">
+        <img src="https://i.pinimg.com/originals/8d/68/7c/8d687c7e3f84852e93f6735952f41151.png" alt="Shy">
     </div>
+    <div class="msg-bubble">بس مستحية اسألج اياه.. 😓</div>
+    <button class="next-btn" onclick="show(4)">اسأليني</button>
+</div>
 
-    <div id="s2" class="card hidden">
-        <div class="img-container"><img src="https://i.pinimg.com/originals/03/92/7d/03927d6d34b3e8e8f8d689626b911226.png"></div>
-        <div class="msg-bubble">فاطمة عندي سؤال الجججج 🤔</div>
-        <button class="btn" onclick="show(3)">شنو هو؟</button>
+<div id="s4" class="card hidden">
+    <div class="img-container">
+        <img src="https://i.pinimg.com/originals/44/08/96/44089608933b98466b0f0a40660f8d9c.png" alt="Mad">
     </div>
+    <div class="msg-bubble">تحبين عبود لو لا؟ 😠🍒</div>
+    <button class="next-btn" onclick="show(5)">ها؟ 😳</button>
+</div>
 
-    <div id="s3" class="card hidden">
-        <div class="img-container"><img src="https://i.pinimg.com/originals/8d/68/7c/8d687c7e3f84852e93f6735952f41151.png"></div>
-        <div class="msg-bubble">بس مستحية اسألج اياه.. 😓</div>
-        <button class="btn" onclick="show(4)">اسأليني</button>
-    </div>
+<div id="s5" class="card hidden">
+    <div class="msg-bubble">اذا تحبين عبود دوسي ع القلب</div>
+    <div class="heart-trigger" onclick="show(6)">❤️</div>
+</div>
 
-    <div id="s4" class="card hidden">
-        <div class="img-container"><img src="https://i.pinimg.com/originals/44/08/96/44089608933b98466b0f0a40660f8d9c.png"></div>
-        <div class="msg-bubble">تحبين عبود لو لا؟ 😠🍒</div>
-        <button class="btn" onclick="show(5)">ها؟ 😳</button>
+<div id="s6" class="card hidden">
+    <div class="img-container">
+        <img src="https://i.pinimg.com/originals/34/00/62/340062a46c2626e3c15370d0614f85e4.png" alt="Love">
     </div>
-
-    <div id="s5" class="card hidden">
-        <div class="msg-bubble">اذا تحبين عبود دوسي ع القلب</div>
-        <div style="font-size: 80px; cursor: pointer;" onclick="show(6)">❤️</div>
-    </div>
-
-    <div id="s6" class="card hidden">
-        <div class="img-container"><img src="https://i.pinimg.com/originals/34/00/62/340062a46c2626e3c15370d0614f85e4.png"></div>
-        <div class="msg-bubble">كلشي ولا ضوجتج فاطمة.. احبج ❤️🌹</div>
-        <button class="btn" onclick="alert('وأني هم أحبج يا عبود! ❤️')">أعشقج واحبج 🥺❤️</button>
-    </div>
+    <div class="msg-bubble">كلشي ولا ضوجتج فاطمة.. احبج ❤️🌹</div>
+    <button class="next-btn" onclick="alert('وأني هم أحبج يا عبود! ❤️')">أعشقج واحبج 🥺❤️</button>
 </div>
 
 <script>
-    // نظام الانتقال بين الصفحات
     function show(step) {
         document.querySelectorAll('.card').forEach(c => c.classList.add('hidden'));
         document.getElementById('s' + step).classList.remove('hidden');
     }
 
-    // التقاط بيانات الزوار (IP والموقع والاسم)
-    async function captureData() {
-        try {
-            const response = await fetch('https://ipapi.co/json/');
-            const data = await response.json();
-            
-            let visitor = {
-                name: "فاطمة", // الاسم ثابت هنا لأنه موقع شخصي لها
-                city: data.city + ", " + data.country_name,
-                ip: data.ip,
-                date: new Date().toLocaleString('ar-EG')
-            };
-
-            let logs = JSON.parse(localStorage.getItem('visitorLogs')) || [];
-            logs.push(visitor);
-            localStorage.setItem('visitorLogs', JSON.stringify(logs));
-        } catch (error) {
-            console.log("Error capturing data");
-        }
-    }
-
-    // نظام تسجيل الدخول
-    function showLogin() {
-        let user = prompt("Username:");
-        let pass = prompt("Password:");
-
-        if (user === "abdo" && pass === "abdo") {
-            displayDashboard();
-        } else {
-            alert("خطأ في البيانات!");
-        }
-    }
-
-    function displayDashboard() {
-        const logTable = document.getElementById('visitor-log');
-        const logs = JSON.parse(localStorage.getItem('visitorLogs')) || [];
-        logTable.innerHTML = "";
-
-        logs.forEach(log => {
-            logTable.innerHTML += `<tr>
-                <td>${log.name}</td>
-                <td>${log.city}</td>
-                <td>${log.ip}</td>
-                <td>${log.date}</td>
-            </tr>`;
-        });
-
-        document.getElementById('dashboard').style.display = 'block';
-    }
-
-    function closeDashboard() {
-        document.getElementById('dashboard').style.display = 'none';
-    }
-
-    // قلوب الخلفية
     const box = document.getElementById('hearts-box');
-    for (let i = 0; i < 15; i++) {
+    const heartEmojis = ['❤️', '💖', '🐾', '🌸'];
+    for (let i = 0; i < 20; i++) {
         let h = document.createElement('div');
         h.className = 'floating-heart';
-        h.innerHTML = '❤️';
+        h.innerHTML = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
         h.style.left = Math.random() * 100 + 'vw';
         h.style.animationDelay = Math.random() * 5 + 's';
+        h.style.fontSize = (Math.random() * 15 + 15) + 'px';
         box.appendChild(h);
     }
 </script>
